@@ -27,7 +27,7 @@ public class MyHandler implements HttpHandler {
                     String tableName = parts[parts.length - 1];
                     response = handleGetRequest(tableName);
                 } else {
-                    statusCode = 400; // Bad Request
+                    statusCode = 400;
                 }
             } else if (method.equalsIgnoreCase("POST")) {
                 response = handlePostRequest(exchange);
@@ -36,11 +36,11 @@ public class MyHandler implements HttpHandler {
             } else if (method.equalsIgnoreCase("DELETE")) {
                 response = handleDeleteRequest(exchange);
             } else {
-                statusCode = 405; // Method Not Allowed
+                statusCode = 405;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            statusCode = 500; // Internal Server Error
+            statusCode = 500;
         }
 
         exchange.getResponseHeaders().set("Content-Type", "application/json");
@@ -110,11 +110,9 @@ public class MyHandler implements HttpHandler {
         try {
             connection = DatabaseConnection.getConnection();
 
-            // Membaca data dari body permintaan
             BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
             String requestData = reader.readLine();
 
-            // Memasukkan data ke dalam database
             String query = "INSERT INTO mytable (column_name) VALUES (?)";
             statement = connection.prepareStatement(query);
             statement.setString(1, requestData);
@@ -137,14 +135,11 @@ public class MyHandler implements HttpHandler {
         try {
             connection = DatabaseConnection.getConnection();
 
-            // Mendapatkan ID data dari path permintaan
             String id = exchange.getRequestURI().getPath().split("/")[2];
 
-            // Membaca data dari body permintaan
             BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
             String requestData = reader.readLine();
 
-            // Memperbarui data dalam database
             String query = "UPDATE mytable SET column_name = ? WHERE id = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, requestData);
@@ -167,10 +162,8 @@ public class MyHandler implements HttpHandler {
         try {
             connection = DatabaseConnection.getConnection();
 
-            // Mendapatkan ID data dari path permintaan
             String id = exchange.getRequestURI().getPath().split("/")[2];
 
-            // Menghapus data dari database
             String query = "DELETE FROM mytable WHERE id = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, id);
